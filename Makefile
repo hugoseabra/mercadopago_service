@@ -23,10 +23,10 @@ down:
 
 .PHONY: build
 build:
-	docker build -f conf/Dockerfile -t app-mercado-pago .
+	docker build -f conf/Dockerfile -t mercadopago_service .
 
 .PHONY: publish
 publish:
-	docker tag app-mercado-pago 871800672816.dkr.ecr.us-east-1.amazonaws.com/app-mercado-pago
+	docker tag mercadopago_service 871800672816.dkr.ecr.us-east-1.amazonaws.com/mercadopago_service
 	docker start awsecr
-	docker exec -ti awsecr push app-mercado-pago
+	docker exec -ti awsecr push mercadopago_service
