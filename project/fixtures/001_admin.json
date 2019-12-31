@@ -1,0 +1,30 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Gerente",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$07M3Zm90y3y4$AqQaQZ3B2S/IsT2R2SpRZklvKQEgJDVWVAKbB6yIP0Y=",
+      "last_login": null,
+      "is_superuser": true,
+      "first_name": "Admin",
+      "last_name": "User",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-10-10T17:59:31Z",
+      "username": "admin",
+      "email": "admin@admin.org",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  }
+]

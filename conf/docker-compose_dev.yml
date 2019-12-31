@@ -1,0 +1,52 @@
+version: '3.5'
+services:
+  postgres:
+    image: postgres:9.6-alpine
+    container_name: mp-postgres
+    networks:
+      - postgres
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /tmp/bkp:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=app_mercado_pago
+      - POSTGRES_USER=mercadopago
+      - POSTGRES_PASSWORD=mercadopago
+
+  pgadmin:
+    image: thajeztah/pgadmin4
+    container_name: mp-pgadmin_dev
+    ports:
+      - "5050:5050"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+    volumes:
+      - pgadmin_data:/pgadmin
+
+  ngrok:
+    image: hugoseabra19/ngrok-tunnel
+    container_name: mp-ngrok
+    environment:
+      - TARGET_HOST=172.17.0.1
+      - TARGET_PORT=8000
+    volumes:
+      - /tmp/ngrok:/tmp/bkp
+    ports:
+      - "4040:4040"
+
+volumes:
+  pgadmin_data:
+
+networks:
+  postgres:
+    name: local_postgres
+  mailhog:
+    name: local_mailhog
+  wkhtmltopdf:
+    name: local_wkhtmltopdf
+  rabbitmq:
+    name: local_rabbitmq

@@ -1,0 +1,12 @@
+__pycache__
+.idea/
+db.sqlite3
+/static/
+*.pyc
+/media/
+.coverage
+cover
+logs/
+*.pid
+version
+project/.env
