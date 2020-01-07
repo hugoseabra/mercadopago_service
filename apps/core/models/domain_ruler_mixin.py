@@ -28,8 +28,8 @@ class RuleInstanceTypeError(TypeError):
     """
 
     def __init__(self, message):
-        self.message = \
-            'Rule informado não é um RuleChecker: {}'.format(message)
+        self.message = _('The configured rule is not an instance of'
+                         ' RuleChecker: {}'.format(message))
 
 
 class RuleChecker(ABC):
@@ -44,7 +44,7 @@ class RuleChecker(ABC):
         pass
 
 
-class DomainRuleMixin(object):
+class DomainRuleMixin:
     """
     Adds support to check domain rules
     """
@@ -59,7 +59,7 @@ class DomainRuleMixin(object):
                 checked_rules.append(rule)
                 continue
 
-            raise RuleInstanceTypeError(rule.__class__)
+            raise RuleInstanceTypeError(rule.__class__.__name__)
 
         if checked_rules:
             self.rule_instances = checked_rules
