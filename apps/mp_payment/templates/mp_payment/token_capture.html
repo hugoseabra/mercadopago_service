@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% if next and customer and card and card_number and cvv %}
+    <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+    <script>window.Mercadopago.setPublishableKey("{{ mp_public_key }}");</script>
+    {% endif %}
+</head>
+<body>
+
+{% if next and customer and card and card_number and cvv %}
+    <p>aguarde...</p>
+
+    <div style="display:none">
+    <form action="" method="post" id="pay" name="pay" onsubmit="return false" >
+        {% csrf_token %}
+        <fieldset>
+            <ul>
+                <li>
+                    <label for="cardNumber">Credit card number:</label>
+                    <input type="text" id="cardNumber" data-checkout="cardNumber" autocomplete=off value="{{ card_number }}" />
+                </li>
+                <li>
+                    <label for="securityCode">Security code:</label>
+                    <input type="text" id="securityCode" data-checkout="securityCode" autocomplete=off value="{{ cvv }}" />
+                </li>
+                <li>
+                    <label for="cardExpirationMonth">Expiration month:</label>
+                    <input type="text" id="cardExpirationMonth" data-checkout="cardExpirationMonth" autocomplete=off value="{{ card.expiration_month }}" />
+                </li>
+                <li>
+                    <label for="cardExpirationYear">Expiration year:</label>
+                    <input type="text" id="cardExpirationYear" data-checkout="cardExpirationYear"  autocomplete=off value="{{ card.expiration_year }}" />
+                </li>
+                <li>
+                    <label for="cardholderName">Card holder name:</label>
+                    <input type="text" id="cardholderName" data-checkout="cardholderName" value="{{ card.holder }}" />
+                </li>
+                <li>
+                    <label for="docType">Document type:</label>
+                    <input type="text" id="docType" data-checkout="docType" value="{{ customer.doc_type }}" />
+                </li>
+                <li>
+                    <label for="docNumber">Document number:</label>
+                    <input type="text" id="docNumber" data-checkout="docNumber" value="{{ customer.doc_number }}" />
+                </li>
+            </ul>
+
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <input type="hidden" name="token" id="token" value=""/>
+            <input type="hidden" name="card_id" id="card_id" value=""/>
+            <input type="submit" id="submit_button" value="create" />
+        </fieldset>
+    </form>
+    </div>
+
+    <script>
+    var doSubmit = false;
+
+    function addEvent(to, type, fn){
+        if(document.addEventListener){
+            to.addEventListener(type, fn, false);
+        } else if(document.attachEvent){
+            to.attachEvent('on'+type, fn);
+        } else {
+            to['on'+type] = fn;
+        }
+    }
+
+    addEvent(document.querySelector('#pay'), 'submit', doPay);
+
+    function doPay(event){
+        event.preventDefault();
+        if(!doSubmit){
+            var $form = document.querySelector('#pay');
+
+            window.Mercadopago.createToken($form, sdkResponseHandler); // The function "sdkResponseHandler" is defined below
+
+            return false;
+        }
+    }
+
+    function sdkResponseHandler(status, response) {
+        console.log(response);
+        if (status != 200 && status != 201) {
+            alert("verify filled data");
+        }else{
+            var form = document.querySelector('#pay');
+            var token = document.querySelector('#token');
+            var card_id = document.querySelector('#card_id');
+            token.setAttribute('value', response.id);
+            doSubmit=true;
+            form.submit();
+        }
+    }
+
+    window.setTimeout(function() {
+        var button = document.querySelector('#submit_button');
+        if (document.createEvent) {
+            var evt = document.createEvent('MouseEvents');
+            evt.initEvent('click', true, false);
+            button.dispatchEvent(evt);
+        } else if (document.createEventObject) {
+            button.fireEvent('onclick') ;
+        } else if (typeof node.onclick == 'function') {
+            button.onclick();
+        }
+    }, 3000);
+    </script>
+
+{% else %}
+<div>
+    <h1>Error</h1>
+    {% if not customer %}
+    <p>Invalid code to process capture.</p>
+    {% endif %}
+    {% if not card %}
+    <p>Invalid card to process capture.</p>
+    {% endif %}
+    {% if not card_number %}
+    <p>Invalid card number to process capture.</p>
+    {% endif %}
+    {% if not next %}
+    <p>Next url must be provided.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+</body>
+</html>
