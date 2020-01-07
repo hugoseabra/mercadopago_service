@@ -38,15 +38,36 @@ services:
     ports:
       - "4040:4040"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: mp-rabbitmq
+    hostname: mprabbitmq # database unique name
+    networks:
+      - rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=mercadopago
+      - RABBITMQ_DEFAULT_PASS=mercadopago
+      - RABBITMQ_ERLANG_COOKIE=mercadopagorabbitmqservice
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  flower:
+    image: hugoseabra19/docker-celery-flower
+    container_name: mp-flower
+    environment:
+      - CELERY_BROKER_URL=amqp://mercadopago:mercadopago@rabbitmq:5672/
+      - FLOWER_PORT=5555
+    ports:
+      - 5555:5555
+    networks:
+      - rabbitmq
+
 volumes:
   pgadmin_data:
 
 networks:
   postgres:
     name: local_postgres
-  mailhog:
-    name: local_mailhog
-  wkhtmltopdf:
-    name: local_wkhtmltopdf
   rabbitmq:
     name: local_rabbitmq
