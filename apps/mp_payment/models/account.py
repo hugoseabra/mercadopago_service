@@ -1,9 +1,11 @@
 import uuid
+from collections import OrderedDict
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from apps.core.models import EntityMixin, DomainRuleMixin
+from apps.mp_payment.integration import MercadoPagoService
 
 
 class Account(models.Model, EntityMixin, DomainRuleMixin):
@@ -40,7 +42,8 @@ class Account(models.Model, EntityMixin, DomainRuleMixin):
         _('client id'),
         max_length=16,
         help_text=_('The APP_ID given by MercadoPago.'),
-        editable=False,
+        null=False,
+        blank=False,
     )
     secret_key = models.CharField(
         _('secret key'),
@@ -78,6 +81,10 @@ class Account(models.Model, EntityMixin, DomainRuleMixin):
         blank=False,
         editable=False,
     )
+
+    @property
+    def service(self):
+        return MercadoPagoService(self)
 
     def __repr__(self):
         return '<Account {}: {}>'.format(self.pk, self.name)

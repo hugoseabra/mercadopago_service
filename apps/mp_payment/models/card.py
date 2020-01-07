@@ -40,6 +40,13 @@ class Card(models.Model, EntityMixin, DomainRuleMixin):
         blank=True,
         help_text=_("Required in credit card transactions."),
     )
+    tmp_token = models.CharField(
+        _('token'),
+        max_length=32,
+        null=True,
+        blank=True,
+        help_text=_("Required in credit card transactions."),
+    )
     expiration_month = models.PositiveIntegerField(
         _('expiration month'),
         null=False,
@@ -69,115 +76,32 @@ class Card(models.Model, EntityMixin, DomainRuleMixin):
         null=False,
         blank=False,
     )
-    doc_type = models.CharField(
-        _('doc. type'),
-        max_length=32,
-        null=False,
-        blank=False,
-    )
-    doc_number = models.CharField(
-        _('doc. number'),
-        max_length=100,
-        null=False,
-        blank=False,
-    )
-    slug = models.SlugField(
-        _('slug'),
-        max_length=64,
-        help_text=_('Unique identification of the address.'),
-        null=False,
-        blank=False,
-    )
-    street_name = models.CharField(
-        _('street name'),
-        max_length=255,
-        null=False,
-        blank=False,
-    )
-    street_number = models.CharField(
-        _('street number'),
-        max_length=32,
-        null=True,
-        blank=True,
-    )
-    neighborhood_id = models.CharField(
-        _('neighborhood ID'),
-        max_length=16,
-        null=True,
-        blank=True,
-    )
-    neighborhood_name = models.CharField(
-        _('neighborhood name'),
-        max_length=255,
-        null=True,
-        blank=True,
-    )
-    zip_code = models.CharField(
-        _('zip code'),
-        max_length=32,
-        null=True,
-        blank=True,
-    )
-    city_id = models.CharField(
-        _('city ID'),
-        max_length=16,
-        null=True,
-        blank=True,
-    )
-    city_name = models.CharField(
-        _('city name'),
-        max_length=255,
-        null=True,
-        blank=True,
-    )
-    state_id = models.CharField(
-        _('state ID'),
-        max_length=16,
-        null=True,
-        blank=True,
-    )
-    state_name = models.CharField(
-        _('state name'),
-        max_length=255,
-        null=True,
-        blank=True,
-    )
-    country_id = models.CharField(
-        _('country ID'),
-        max_length=16,
-        null=True,
-        blank=True,
-    )
-    country_name = models.CharField(
-        _('country name'),
-        max_length=255,
-        null=True,
-        blank=True,
-    )
-    phone_area_code = models.CharField(
-        _('phone area code'),
-        max_length=5,
-        help_text=_('A phone number to contact anyone on this address.'),
-        null=True,
-        blank=True,
-    )
-    phone_number = models.CharField(
-        _('phone number'),
-        max_length=32,
-        help_text=_('A phone number to contact anyone on this address.'),
-        null=True,
-        blank=True,
-    )
     comments = models.TextField(
         _('comments'),
         help_text=_('Any extra information about this address.'),
         null=True,
         blank=True,
     )
+    deleted = models.BooleanField(
+        _('deleted'),
+        default=False,
+        help_text=_(
+            'Indicates that the card is deleted but has not been'
+            ' synchronized to be deleted in mercado pago.'
+        ),
+    )
     mp_id = models.CharField(
         _('mercadopago ID'),
         max_length=16,
         help_text=_('The CARD_ID given by MercadoPago.'),
+        unique=True,
+    )
+    active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Indicates that the Card can be used to process process payments.'
+        ),
     )
     created_at = models.DateTimeField(
         _('created at'),
@@ -194,6 +118,10 @@ class Card(models.Model, EntityMixin, DomainRuleMixin):
         editable=False,
     )
 
+    @property
+    def synchronized(self):
+        return not (not self.mp_id)
+
     def __repr__(self):
         return '<Card {}: {}, customer: {}>'.format(self.pk,
                                                     self.holder,
@@ -201,3 +129,17 @@ class Card(models.Model, EntityMixin, DomainRuleMixin):
 
     def __str__(self):
         return self.holder
+
+    def to_mp_representation(self):
+        return {
+            'customer_id': self.customer.mp_id,
+            'expiration_month': self.expiration_month,
+            'expiration_year': self.expiration_year,
+            'cardholder': {
+                'name': self.holder,
+                'identification': {
+                    'type': self.customer.doc_type,
+                    'number': self.customer.doc_number,
+                }
+            },
+        }

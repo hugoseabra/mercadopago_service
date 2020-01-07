@@ -24,14 +24,14 @@ class Address(models.Model, EntityMixin, DomainRuleMixin):
         unique=True,
         primary_key=True
     )
-    customer = models.ForeignKey(
+    customer = models.OneToOneField(
         to='mp_payment.Customer',
-        verbose_name=_('owner'),
+        verbose_name=_('customer'),
         help_text=_('customer who owns this address'),
         null=False,
         blank=False,
         on_delete=models.CASCADE,
-        related_name='addresses',
+        related_name='address',
     )
     name = models.CharField(
         _('name'),
@@ -155,3 +155,21 @@ class Address(models.Model, EntityMixin, DomainRuleMixin):
 
     def __str__(self):
         return self.name
+
+    def to_mp_representation(self):
+        return {
+            'id': str(self.pk),
+            'name': self.name,
+            'street_name': self.street_name,
+            'street_number': self.street_number,
+            'neighborhood_name': self.neighborhood_name,
+            'zip_code': self.zip_code,
+            'city_name': self.city_name,
+            'state_name': self.state_name,
+            'country_name': self.country_name,
+            'phone_area_code': self.phone_area_code,
+            'phone_number': self.phone_number,
+            'comments': self.comments,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': self.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+        }
