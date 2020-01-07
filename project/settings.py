@@ -167,3 +167,10 @@ MERCADOPAGO = {
     'pending_url': 'myapp:mp_pending',
     'base_host': get_postback_url()
 }
+
+ACCESS_TOKEN_SANDBOX_MODE = env.str('ACCESS_TOKEN_SANDBOX_MODE')
+MP_PUBLIC_KEY = env.str('MP_PUBLIC_KEY')
+
+# =============================== CELERY ==================================== #
+CELERY_BROKER_URL = 'amqp://mercadopago:mercadopago@localhost:5672/'
+CELERY_RESULT_BACKEND = 'amqp://mercadopago:mercadopago@localhost:5672/'
