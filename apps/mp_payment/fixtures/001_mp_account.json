@@ -1,0 +1,16 @@
+[
+  {
+    "model": "mp_payment.account",
+    "pk": "82d68c99-4683-4d9b-b491-f62b813ce013",
+    "fields": {
+      "name": "MercadoPago application",
+      "slug": "mp-app-11569199",
+      "app_id": "6235967919114850",
+      "secret_key": "TXapWXmyzel7duFZFo9HXMcgk8ktY67W",
+      "sandbox": true,
+      "active": true,
+      "created_at": "2020-01-04T16:55:17.486Z",
+      "updated_at": "2020-01-04T16:55:17.486Z"
+    }
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "model": "mp_payment.address",
+    "pk": "2842cd57-3092-4ffe-8589-8281a6f8aa84",
+    "fields": {
+      "customer": "5aa5c5e5-0310-4bb4-b135-68c910a0e11a",
+      "name": "address 1",
+      "slug": "address-1",
+      "street_name": "Street 1",
+      "street_number": null,
+      "neighborhood_id": null,
+      "neighborhood_name": "Sector X",
+      "zip_code": "75400000",
+      "city_id": null,
+      "city_name": "Goi\u00e2nia",
+      "state_id": null,
+      "state_name": "GO",
+      "country_id": null,
+      "country_name": "Brazil",
+      "phone_area_code": "+55",
+      "phone_number": "6298557454",
+      "comments": "My first address",
+      "created_at": "2020-01-06T17:05:18.350Z",
+      "updated_at": "2020-01-06T17:05:18.350Z"
+    }
+  }
+]

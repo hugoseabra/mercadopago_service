@@ -1,0 +1,25 @@
+[
+  {
+    "model": "mp_payment.customer",
+    "pk": "5aa5c5e5-0310-4bb4-b135-68c910a0e11a",
+    "fields": {
+      "account": "82d68c99-4683-4d9b-b491-f62b813ce013",
+      "external_id": "order-1",
+      "first_name": "James",
+      "last_name": "Bond",
+      "is_company": "False",
+      "email": "007jb@scotlandyard.com",
+      "phone_area_code": "+55",
+      "phone_number": "62996550852",
+      "doc_type": "CPF",
+      "doc_number": "40209575093",
+      "description": "Testing customer",
+      "default_card_pk": null,
+      "test_customer": true,
+      "active": true,
+      "mp_id": "",
+      "created_at": "2020-01-04T17:00:51.211Z",
+      "updated_at": "2020-01-04T17:00:51.212Z"
+    }
+  }
+]
